@@ -16,6 +16,7 @@ def events(screen, gun, bullets):
             # Left bottom
             elif event.key == pygame.K_LEFT:
                 gun.move_left = True
+            # Space bottom = gun Fire
             elif event.key == pygame.K_SPACE:
                 new_bullet = Bullet(screen, gun)
                 bullets.add(new_bullet)
@@ -38,6 +39,7 @@ def update(screen, background_color, gun, bullets):
     pygame.display.flip()
 
 def update_bullets(bullets):
+    """Update the coordinates of bullets and delete them from the list"""
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
