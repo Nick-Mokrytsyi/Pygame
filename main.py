@@ -20,7 +20,7 @@ def start():
         controls.events(screen, gun, bullets)
         gun.update_gun()
         controls.update(screen, background_color, gun, enemys, bullets)
-        controls.update_bullets(bullets)
+        controls.update_bullets(enemys, bullets)
         controls.update_enemys(enemys)
 
 
