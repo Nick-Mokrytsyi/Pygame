@@ -1,8 +1,11 @@
 import pygame
 import sys
 
+import space_gun
 from bullet import Bullet
 from enemy import Enemy
+import time
+from space_gun import *
 
 
 def events(screen, gun, bullets):
@@ -49,8 +52,12 @@ def update_bullets(enemys, bullets):
     collisions = pygame.sprite.groupcollide(bullets, enemys, True, True)  # Delete the bullet and enemy
 
 
-def update_enemys(enemy):
-    enemy.update()
+def update_enemys(stats, screen, gun, enemys, bullets):
+    enemys.update()
+
+    if pygame.sprite.spritecollideany(gun, enemys):
+        gun_kill(stats, screen, gun, enemys, bullets)
+    enemy_check(stats, screen, gun, enemys, bullets)
 
 
 def create_army(screen, enemys):
@@ -67,3 +74,21 @@ def create_army(screen, enemys):
             enemy.rect.x = enemy.x
             enemy.rect.y = enemy.rect.height + (enemy.rect.height * row_number)
             enemys.add(enemy)
+
+
+
+def gun_kill(stats, screen, gun, enemys, bullets):
+    stats.guns_left -= 1
+    enemys.empty()
+    bullets.empty()
+    create_army(screen, enemys)
+    gun.create_gun()
+    time.sleep(1)
+
+
+def enemy_check(stats, screen, gun, enemys, bullets):
+    screen_rect = screen.get_rect()
+    for enemy in enemys.sprites():
+        if enemy.rect.bottom >= screen_rect.bottom:
+            gun_kill(stats, screen, gun, enemys, bullets)
+            break
