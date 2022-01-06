@@ -30,7 +30,7 @@ def events(screen, gun, bullets):
                 gun.move_left = False
 
 
-def update(screen, background_color, gun, enemys,  bullets):
+def update(screen, background_color, gun, enemys, bullets):
     """Update the display of game"""
     screen.fill(background_color)
     for bullet in bullets.sprites():
@@ -40,16 +40,18 @@ def update(screen, background_color, gun, enemys,  bullets):
     pygame.display.flip()
 
 
-def update_bullets(bullets):
+def update_bullets(enemys, bullets):
     """Update the coordinates of bullets and delete them from the list"""
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+    collisions = pygame.sprite.groupcollide(bullets, enemys, True, True)  # Delete the bullet and enemy
 
 
 def update_enemys(enemy):
     enemy.update()
+
 
 def create_army(screen, enemys):
     enemy = Enemy(screen)
@@ -65,5 +67,3 @@ def create_army(screen, enemys):
             enemy.rect.x = enemy.x
             enemy.rect.y = enemy.rect.height + (enemy.rect.height * row_number)
             enemys.add(enemy)
-
-
