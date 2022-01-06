@@ -26,3 +26,6 @@ class Space_Rocket():
             self.center -= 3.5
 
         self.rect.centerx = self.center
+
+    def create_gun(self):
+        self.center = self.screen_rect.centerx
