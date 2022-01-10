@@ -1,9 +1,10 @@
 import pygame
+from pygame.sprite import Sprite
 
-
-class Space_Rocket():
+class Space_Rocket(Sprite):
 
     def __init__(self, screen):
+        super(Space_Rocket, self).__init__()
         self.screen = screen
         self.image = pygame.image.load('images/Space rocket.png')
         self.rect = self.image.get_rect()

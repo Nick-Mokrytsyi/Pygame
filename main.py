@@ -5,6 +5,7 @@ from space_gun import Space_Rocket
 from pygame.sprite import Group
 from enemy import Enemy
 from stats import Stats
+from scores import Scores
 
 
 def start():
@@ -17,13 +18,15 @@ def start():
     enemys = Group()
     controls.create_army(screen, enemys)
     stats = Stats()
+    score = Scores(screen, stats)
 
     while True:
         controls.events(screen, gun, bullets)
-        gun.update_gun()
-        controls.update(screen, background_color, gun, enemys, bullets)
-        controls.update_bullets(enemys, bullets)
-        controls.update_enemys(stats, screen, gun, enemys, bullets)
+        if stats.flag:
+            gun.update_gun()
+            controls.update(screen, background_color, stats, score, gun, enemys, bullets)
+            controls.update_bullets(screen, stats, score, enemys, bullets)
+            controls.update_enemys(stats, screen, gun, enemys, bullets)
 
 
 start()

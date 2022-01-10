@@ -33,9 +33,11 @@ def events(screen, gun, bullets):
                 gun.move_left = False
 
 
-def update(screen, background_color, gun, enemys, bullets):
+def update(screen, background_color, stats, score, gun, enemys, bullets):
     """Update the display of game"""
     screen.fill(background_color)
+    score.show_score()
+    score.image_life()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     gun.show()
@@ -43,13 +45,21 @@ def update(screen, background_color, gun, enemys, bullets):
     pygame.display.flip()
 
 
-def update_bullets(enemys, bullets):
+def update_bullets(screen, stats, score, enemys, bullets):
     """Update the coordinates of bullets and delete them from the list"""
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
     collisions = pygame.sprite.groupcollide(bullets, enemys, True, True)  # Delete the bullet and enemy
+    if collisions:
+        for enemys in collisions.values():
+            stats.score += 10 * len(enemys)
+        score.image_score()
+        check_high_score(stats, score)
+    if len(enemys) == 0:
+        bullets.empty()
+        create_army(screen, enemys)
 
 
 def update_enemys(stats, screen, gun, enemys, bullets):
@@ -76,14 +86,17 @@ def create_army(screen, enemys):
             enemys.add(enemy)
 
 
-
 def gun_kill(stats, screen, gun, enemys, bullets):
-    stats.guns_left -= 1
-    enemys.empty()
-    bullets.empty()
-    create_army(screen, enemys)
-    gun.create_gun()
-    time.sleep(1)
+    if stats.guns_left > 0:
+        stats.guns_left -= 1
+        enemys.empty()
+        bullets.empty()
+        create_army(screen, enemys)
+        gun.create_gun()
+        time.sleep(1)
+    else:
+        stats.guns_left = False
+        sys.exit()
 
 
 def enemy_check(stats, screen, gun, enemys, bullets):
@@ -92,3 +105,11 @@ def enemy_check(stats, screen, gun, enemys, bullets):
         if enemy.rect.bottom >= screen_rect.bottom:
             gun_kill(stats, screen, gun, enemys, bullets)
             break
+
+
+def check_high_score(stats, score):
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        score.image_high_score()
+        with open ("high_score.txt", 'w') as file:
+            file.write(str(stats.high_score))
